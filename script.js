@@ -33,7 +33,7 @@ function takePicture() {
 }
 
 function processImage(dataUrl) {
-    const postUrl = "";
+    const postUrl = "http://localhost:8000/braille-reader/read/";
     fetch(postUrl, {
         method : "POST",
         headers : {
@@ -43,7 +43,7 @@ function processImage(dataUrl) {
     }).then(response => response.json).then(text => {
         if (!("webkitSpeechRecognition" in window)) say("Sorry, your browser can't recognise speech so " +
             "I can't understand what you say. Please switch to a supported one, like Chrome.")
-        else startLearning(text);
+        else startLearning(JSON.stringify(text));
     });
 }
 
