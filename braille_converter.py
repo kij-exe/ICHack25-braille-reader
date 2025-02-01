@@ -3,7 +3,7 @@ import anthropic  # Official Anthropic SDK for Claude API
 from dotenv import load_dotenv  # For loading .env files
 
 def convert_braille_to_english(braille_input: str) -> str:
-    #documentation
+    #documentation - 😂😂🤓👍
     """
     Convert Braille text to English using Claude 3.5 Sonnet model.
     
