@@ -1,5 +1,6 @@
 from braille_converter import convert_braille_to_english
 from image_converter import convert_image_to_braille
+from generate_voice_eleven import text_to_speech
 
 SAMPLE_IMG_PATH = "braille_sample.jpg"
 
@@ -10,3 +11,5 @@ print(braille_text)
 english_text = convert_braille_to_english(braille_text)
 print("--- English output:")
 print(english_text)
+
+text_to_speech(english_text, output_file="output.mp3", voice='cgSgspJ2msm6clMCkdW9')
