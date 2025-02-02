@@ -9,7 +9,10 @@ pip install anthropic
 pip install python-dotenv 
 pip install beautifulsoup4
 pip install requests
+pip install django
 ```
+
+Create a file named `.env` by copying the contents of `.env.template` and replacng the placeholders accordingly.
 
 ## Usage
 
