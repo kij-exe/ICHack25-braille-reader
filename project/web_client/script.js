@@ -1,9 +1,10 @@
 let cameraLoaded = false;
 let recognition;
 
-document.addEventListener("DOMContentLoaded", () => {
-    setupMicrophone();
+document.addEventListener("DOMContentLoaded", async () => {
     setupStream();
+    await say("You can shout capture or something similar in your own words to take a picture of the Braille for us to read, when you're ready.");
+    setupMicrophone();
 });
 
 function setupMicrophone() {
@@ -18,11 +19,12 @@ function setupMicrophone() {
         
     recognition.onresult = (event) => {
         recognition.stop();
+        if (event.results[0][0].transcript.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/).some(item => capturePhrases.includes(item.toLowerCase()))) {
+            if (cameraLoaded) takePicture(); // repeated condition to allow speech listening restart if camera has not loaded
+        } else {
         setTimeout(() => {
             recognition.start(); // console error says recognition has already started, but it has not - rerecognition only works if this line is left in.
         }, 100); // slight delay to allow speech recognition to restart.
-        if (event.results[0][0].transcript.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/).some(item => capturePhrases.includes(item.toLowerCase()))) {
-            takePicture();
         };
     };
 };
@@ -81,7 +83,7 @@ let totalWords = 0;
 let correctWords = 0;
 
 async function say(text) {
-    await Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
         const saidText = new SpeechSynthesisUtterance(text);
         saidText.lang = "en-GB";
 
@@ -119,7 +121,7 @@ async function testWord(word) {
 };
 
 async function hearNextWord() {
-    return Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         recognition.start();
         
         recognition.onresult = (event) => {
