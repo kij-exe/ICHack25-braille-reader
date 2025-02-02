@@ -14,4 +14,4 @@ print("--- English output:")
 print(english_text)
 
 # text_to_speech(english_text, output_file="output.mp3", voice='cgSgspJ2msm6clMCkdW9') # Use sparingly
-gtts(english_text)
+#gtts(english_text)

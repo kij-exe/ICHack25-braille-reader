@@ -51,6 +51,7 @@ def convert_braille_to_english(braille_input: str) -> str:
                 "3. Remove any translator notes\n"
                 "4. Maintain original line breaks\n"
                 "5. Never add markdown formatting\n"
+                "6. ICHACK may appear in short text answers\n"
                 "Output ONLY the raw converted text."
             ),
             messages=[{"role": "user", "content": braille_input}],
