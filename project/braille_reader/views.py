@@ -5,8 +5,9 @@ import json
 
 from image_converter import convert_image_to_braille
 
+
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Hello, world. You're at the index.")
 
 # Read image request to a server
 @csrf_exempt

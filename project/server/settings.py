@@ -1,3 +1,5 @@
+import sys
+
 """
 Django settings for server project.
 
@@ -13,11 +15,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+sys.path.append(str(BASE_DIR))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+# NOT PRODUCTION SETTINGS
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-zrs1n1o4!mi8@77w0jsy+h$3f$oyw=++j1q+0+j)kkpe6u29h$'
@@ -25,7 +30,9 @@ SECRET_KEY = 'django-insecure-zrs1n1o4!mi8@77w0jsy+h$3f$oyw=++j1q+0+j)kkpe6u29h$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '172.30.170.92']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '172.30.170.92']
+
+# NOT PRODUCTION SETTINGS
 
 # Application definition
 
