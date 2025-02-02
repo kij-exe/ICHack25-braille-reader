@@ -53,6 +53,8 @@ def read(request):
         }
     return JsonResponse(response)
 
+IMAGE_TO_BRAILLE_DIR = "output/picture-image-to-braille.jpg"
+
 @csrf_exempt
 def image_to_braille(request):
     if request.method == 'POST':
@@ -60,11 +62,11 @@ def image_to_braille(request):
         data = request.body
 
         # picture to Braille text
-        with open("picture.jpg", "wb") as file:
+        with open(IMAGE_TO_BRAILLE_DIR, "wb") as file:
             file.write(data)
 
         try:
-            braille_text = convert_image_to_braille("picture.jpg")
+            braille_text = convert_image_to_braille(IMAGE_TO_BRAILLE_DIR)
 
             response = {
                 "status": "success",
@@ -114,6 +116,8 @@ def braille_to_english(request):
         }
     return JsonResponse(response)
 
+IMAGE_TO_ENGLISH_DIR = "output/picture-image-to-english.jpg"
+
 @csrf_exempt
 def image_to_english(request):
     if request.method == 'POST':
@@ -121,11 +125,11 @@ def image_to_english(request):
         data = request.body
 
         # picture to Braille text
-        with open("picture.jpg", "wb") as file:
+        with open(IMAGE_TO_ENGLISH_DIR, "wb") as file:
             file.write(data)
 
         try:
-            braille_text = convert_image_to_braille("picture.jpg")
+            braille_text = convert_image_to_braille(IMAGE_TO_ENGLISH_DIR)
             english_text = convert_braille_to_english(braille_text)
 
             response = {
