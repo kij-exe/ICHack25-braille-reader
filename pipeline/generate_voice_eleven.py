@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 
-def text_to_speech(text: str, output_file: str = "output.mp3", voice: str = 'cgSgspJ2msm6clMCkdW9') -> None:
+def text_to_speech(text: str, output_file: str = "output/output.mp3", voice: str = 'cgSgspJ2msm6clMCkdW9') -> None:
     """
     Convert text to speech using ElevenLabs API and save as MP3
     

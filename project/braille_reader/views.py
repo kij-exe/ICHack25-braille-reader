@@ -6,6 +6,7 @@ import requests
 from pipeline.braille_converter import convert_braille_to_english
 from pipeline.image_converter import convert_image_to_braille
 from pipeline.generate_voice_gtts import text_to_speech
+from pipeline.main import read_braille
 
 
 def index(request):
@@ -22,8 +23,7 @@ def read(request):
         with open("picture.jpg", "wb") as file:
             file.write(data)
 
-        response = main("picture.jpg")
-
+        read_braille("picture.jpg")
     else:
         response = {
             'status': 'error',
