@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 
+from image_converter import convert_image_to_braille
+
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
@@ -15,6 +17,11 @@ def read(request):
             data = request.body
 
             # picture to Braille text
+            with open("picture.jpeg", "w") as file:
+                file.write(data)
+
+            braille_text = convert_image_to_braille("picture.jpeg")
+            print(braille_text)
 
             # Braille text to English text
 
