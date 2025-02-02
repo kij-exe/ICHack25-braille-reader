@@ -20,7 +20,12 @@ function setupMicrophone() {
         
     recognition.onresult = (event) => {
         recognition.stop();
-        let words = event.results[0][0].transcript.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/);
+        let words = [];
+        try {
+            words = event.results[0][0].transcript.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/);
+        } catch (event) {
+            console.error(event.error);
+        };
         if (words.some(item => capturePhrases.includes(item.toLowerCase()))) {
             if (cameraLoaded) takePicture(); // listen again if camera has not loaded
         } else if (words.some(item => uploadPhrases.includes(item.toLowerCase()))) {
@@ -30,10 +35,10 @@ function setupMicrophone() {
             // such as the blind - who should also be considered before rolling out features like this.
             uploadImage();
         } else {
-            setTimeout(() => {
+            try {
                 recognition.start(); // console error says recognition has already started,
                 // but it has not - rerecognition only works if this line is left in.
-            }, 100); // slight delay to allow speech recognition to restart.
+            } catch (_) {}; // stop crashing.
         };
     };
 };
@@ -105,18 +110,25 @@ function uploadImage() {
 };
 
 function processImage(dataUrl) {
-    const postUrl = "http://localhost:8000/braille-reader/read/";
+    const postUrl = "http://172.30.170.92:8000/braille-reader/image-to-english/";
+    // Convert Base64 string to binary data
+    const byteCharacters = atob(dataUrl.split(',')[1]);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
     fetch(postUrl, {
         method : "POST",
         headers : {
-            "Content-Type" : "application/json"
+            "Content-Type" : "image/jpeg",
         },
-        body : JSON.stringify({ image : dataUrl })
-    }).then(response => response.json).then(text => {
-        if (!("webkitSpeechRecognition" in window)) say("Sorry, your browser can't recognise speech so " +
-            "I can't understand what you say. Please switch to a supported one, like Chrome.")
-        else startLearning(text.text);
-    });
+        body : byteArray
+    }).then(response => response.json()).then(data => {
+        if (!("webkitSpeechRecognition" in window)) {say("Sorry, your browser can't recognise speech so " +
+            "I can't understand what you say. Please switch to a supported one, like Chrome.");}
+        else {startLearning(data["text"]);}
+     });
 };
 
 let totalWords = 0;
@@ -140,7 +152,7 @@ async function say(text) {
 };
 
 async function startLearning(text) {
-    const words = text.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/).map(word => word.toLowerCase());
+    const words = text.split(/[!"#$%&()*+,\./:;<=>?@[\\\]^_`{|}~\s]/).map(word => word.toLowerCase());
     totalWords = words.length;
     await say("Welcome to the Braille learning service. This is how it will work - " +
         "you read a word, then I will tell you if it was correct or not. " +
@@ -150,36 +162,55 @@ async function startLearning(text) {
         const computerSaid = document.getElementById("computerSaid");
         userSaid.style.display = "block";
         computerSaid.style.display = "block";
-    for (let word in words) await testWord(word);
+    for (let index in words) await testWord(words[index]);
     finishingStats(words);
 };
 
+function playBeep() {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+    oscillator.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.2);
+};
+
 async function testWord(word) {
+    playBeep();
     let guess = await hearNextWord();
     const userSaid = document.getElementById("userSaid");
     const computerSaid = document.getElementById("computerSaid");
     if (guess == word) {
         userSaid.textContent = "Correct!";
-        userSaid.color = "green";
+        userSaid.style.color = "green";
         computerSaid.textContent = word;
         correctWords++;
         await say("Well done! That's the correct word.");
     } else {
         userSaid.textContent = "Incorrect! You said " + guess;
-        userSaid.color = "red";
+        userSaid.style.color = "red";
         computerSaid.textContent = "The correct word was " + word;
-        await say("Good try, but the correct word was", word);
+        await say("Good try, but the correct word was " + word);
     };
 };
 
 async function hearNextWord() {
     return new Promise((resolve, reject) => {
-        recognition.start();
+        try {
+            recognition.start();
+        } catch (e) {
+            // ignore failure and allow app to continue
+        };
         
         recognition.onresult = (event) => {
             recognition.stop();
-            let words = event.results[0][0].transcript.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/);
-            resolve(words[0].toLowerCase());
+            try {
+                let words = event.results[0][0].transcript.split(/[!"#$%&()*+,\./:;<=>?@[\\\]^_`{|}~\s]/);
+                resolve(words[0].toLowerCase());
+            } catch (event) {
+                reject(event.error); // probably empty speech
+            };
         };
 
         recognition.onerror = (event) => {
@@ -189,12 +220,12 @@ async function hearNextWord() {
 };
 
 function finishingStats(words) { // more analysis, such as the commonly misread letters can be given here.
-    say("Nicely done! Out of", totalWords, "you got", correctWords, "correct! See you next time!");
+    say("Nicely done! Out of " + totalWords + " you got " + correctWords + " correct! See you next time!");
     const wordsElem = document.getElementById("answers");
     wordsElem.textContent = words.join(" ");
     wordsElem.style.display = "block";
     const scoreElem = document.getElementById("score");
-    scoreElem.textContent = "You got " + correctWords + " words correct out of " + totalWords +
-        " words! Well done! Keep up the practise.";
+    scoreElem.textContent = "You got " + correctWords + " words correct out of " +
+    totalWords + " words! Well done! Keep up the practise.";
     scoreElem.style.display = "block";
 };

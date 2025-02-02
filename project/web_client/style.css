@@ -12,7 +12,8 @@ body {
     .button {
         font-size : 6vw;
         padding : 1vw;
-        margin-top: 4vw;
+        margin-top : 4vw;
+        height : 20vh;
     }
 }
 
