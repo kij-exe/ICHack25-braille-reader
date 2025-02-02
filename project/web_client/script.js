@@ -53,7 +53,7 @@ function setupStream() {
         console.error("Error accessing camera:", error);
         say("Please allow access to the camera, this is so that we can read what you are reading.");
     });
-}
+};
 
 function takePicture() {
     if (cameraLoaded) {
@@ -72,8 +72,8 @@ function takePicture() {
         video.srcObject.getTracks().forEach(track => track.stop());
         const dataUrl = canvas.toDataURL("image/jpeg");
         processImage(dataUrl);
-    }
-}
+    };
+};
 
 function uploadImage() {
     const fileInput = document.createElement("input");
@@ -102,7 +102,7 @@ function uploadImage() {
     });
 
     fileInput.click();
-}
+};
 
 function processImage(dataUrl) {
     const postUrl = "http://localhost:8000/braille-reader/read/";
@@ -117,7 +117,7 @@ function processImage(dataUrl) {
             "I can't understand what you say. Please switch to a supported one, like Chrome.")
         else startLearning(text.text);
     });
-}
+};
 
 let totalWords = 0;
 let correctWords = 0;
@@ -137,7 +137,7 @@ async function say(text) {
 
         speechSynthesis.speak(saidText);
     });
-}
+};
 
 async function startLearning(text) {
     const words = text.split(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\s]/).map(word => word.toLowerCase());
@@ -152,7 +152,7 @@ async function startLearning(text) {
         computerSaid.style.display = "block";
     for (let word in words) await testWord(word);
     finishingStats(words);
-}
+};
 
 async function testWord(word) {
     let guess = await hearNextWord();
@@ -186,7 +186,7 @@ async function hearNextWord() {
             reject(event.error);
         };
     });
-}
+};
 
 function finishingStats(words) { // more analysis, such as the commonly misread letters can be given here.
     say("Nicely done! Out of", totalWords, "you got", correctWords, "correct! See you next time!");
@@ -197,4 +197,4 @@ function finishingStats(words) { // more analysis, such as the commonly misread 
     scoreElem.textContent = "You got " + correctWords + " words correct out of " + totalWords +
         " words! Well done! Keep up the practise.";
     scoreElem.style.display = "block";
-}
+};
