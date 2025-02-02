@@ -113,3 +113,36 @@ def braille_to_english(request):
             'message': 'Only POST requests are processed',
         }
     return JsonResponse(response)
+
+@csrf_exempt
+def image_to_english(request):
+    if request.method == 'POST':
+        # picture in jpeg format
+        data = request.body
+
+        # picture to Braille text
+        with open("picture.jpg", "wb") as file:
+            file.write(data)
+
+        try:
+            braille_text = convert_image_to_braille("picture.jpg")
+            english_text = convert_braille_to_english(braille_text)
+
+            response = {
+                "status": "success",
+                "text": english_text,
+            }
+
+        except Exception as e:
+            print(e)
+            response = {
+                'status': 'error',
+                'message': 'Image processing error',
+            }
+
+    else:
+        response = {
+            'status': 'error',
+            'message': 'Only POST requests are processed',
+        }
+    return JsonResponse(response)
