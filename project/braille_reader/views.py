@@ -2,10 +2,10 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import requests
-import json
 
-from braille_converter import convert_braille_to_english
-from image_converter import convert_image_to_braille
+from pipeline.braille_converter import convert_braille_to_english
+from pipeline.image_converter import convert_image_to_braille
+from pipeline.generate_voice_gtts import text_to_speech
 
 
 def index(request):
@@ -22,27 +22,8 @@ def read(request):
         with open("picture.jpg", "wb") as file:
             file.write(data)
 
-        try:
-            braille_text = convert_image_to_braille("picture.jpg")
-            print(braille_text) # debug
+        response = main("picture.jpg")
 
-            # Braille text to English text
-            english_text = convert_braille_to_english(braille_text)
-            print(english_text)  # debug
-
-            # English text to audio
-            audio = None
-
-            response = {
-                'status': 'success',
-                'audio': english_text,
-            }
-
-        except requests.exceptions.ReadTimeout:
-            response = {
-                'status': 'success',
-                'message': 'picture format',
-            }
     else:
         response = {
             'status': 'error',
