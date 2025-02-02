@@ -25,7 +25,7 @@ def convert_image_to_braille(image_path: str) -> str:
     "process_2_sides": "False"
   }
 
-  res = rq.post(UPLOAD_URL, files=files, data=data, allow_redirects=False)
+  res = rq.post(UPLOAD_URL, files=files, data=data, allow_redirects=False, timeout=10)
   
   # The request is expected to redirect to the result page  
   redirect_url = res.headers.get("Location")
