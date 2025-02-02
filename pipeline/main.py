@@ -1,6 +1,6 @@
-from pipeline.image_converter import convert_image_to_braille
-from pipeline.braille_converter import convert_braille_to_english
-from pipeline.generate_voice_gtts import text_to_speech
+from image_converter import convert_image_to_braille
+from braille_converter import convert_braille_to_english
+from generate_voice_gtts import text_to_speech
 
 def read_braille(image_path: str, output_file: str = "output/output.mp3"):
     """
@@ -18,4 +18,4 @@ def read_braille(image_path: str, output_file: str = "output/output.mp3"):
     english_text = convert_braille_to_english(braille_text)
     text_to_speech(english_text, output_file)
   
-read_braille("braille_sample.jpg")
+read_braille("samples/braille_sample.jpg")
