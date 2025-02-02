@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+import requests
 import json
 
+from braille_converter import convert_braille_to_english
 from image_converter import convert_image_to_braille
 
 
@@ -13,30 +15,33 @@ def index(request):
 @csrf_exempt
 def read(request):
     if request.method == 'POST':
+        # picture in jpeg format
+        data = request.body
+
+        # picture to Braille text
+        with open("picture.jpg", "wb") as file:
+            file.write(data)
+
         try:
-            # picture in jpeg format
-            data = request.body
-
-            # picture to Braille text
-            with open("picture.jpeg", "w") as file:
-                file.write(data)
-
-            braille_text = convert_image_to_braille("picture.jpeg")
-            print(braille_text)
+            braille_text = convert_image_to_braille("picture.jpg")
+            print(braille_text) # debug
 
             # Braille text to English text
+            english_text = convert_braille_to_english(braille_text)
+            print(english_text)  # debug
 
             # English text to audio
             audio = None
 
             response = {
                 'status': 'success',
-                'audio': audio,
+                'audio': english_text,
             }
-        except json.JSONDecodeError:
+
+        except requests.exceptions.ReadTimeout:
             response = {
-                'status': 'error',
-                'message': 'Invalid JSON data',
+                'status': 'success',
+                'message': 'picture format',
             }
     else:
         response = {
