@@ -3,7 +3,7 @@ from pipeline.image_converter import convert_image_to_braille
 from pipeline.generate_voice_eleven import text_to_speech 
 from pipeline.generate_voice_gtts import text_to_speech as gtts
 
-SAMPLE_IMG_PATH = "braille_sample.jpg"
+SAMPLE_IMG_PATH = "samples/sonnet_116.png"
 
 braille_text = convert_image_to_braille(SAMPLE_IMG_PATH)
 print("--- Braille output:")
@@ -14,4 +14,4 @@ print("--- English output:")
 print(english_text)
 
 # text_to_speech(english_text, output_file="output.mp3", voice='cgSgspJ2msm6clMCkdW9') # Use sparingly
-gtts(english_text)
+#gtts(english_text)

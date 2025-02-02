@@ -23,11 +23,11 @@ def read(request):
         data = request.body
 
         # picture to Braille text
-        with open("picture.jpg", "wb") as file:
+        with open("output/picture.jpg", "wb") as file:
             file.write(data)
 
         try:
-            read_braille("picture.jpg")
+            read_braille("output/picture.jpg")
 
             audio_file = open("output/output.mp3", 'rb')
             audio = audio_file.read()

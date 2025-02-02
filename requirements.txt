@@ -1,0 +1,6 @@
+# Add your dependencies in this file
+anthropic 
+python-dotenv 
+beautifulsoup4
+requests
+django
