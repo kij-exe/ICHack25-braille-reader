@@ -1,6 +1,6 @@
 from http.client import responses
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import requests
@@ -44,6 +44,67 @@ def read(request):
             response = {
                 'status': 'error',
                 'message': 'Image processing error',
+            }
+
+    else:
+        response = {
+            'status': 'error',
+            'message': 'Only POST requests are processed',
+        }
+    return JsonResponse(response)
+
+@csrf_exempt
+def image_to_braille(request):
+    if request.method == 'POST':
+        # picture in jpeg format
+        data = request.body
+
+        # picture to Braille text
+        with open("picture.jpg", "wb") as file:
+            file.write(data)
+
+        try:
+            braille_text = convert_image_to_braille("picture.jpg")
+
+            response = {
+                "status": "success",
+                "text": braille_text,
+            }
+
+        except Exception as e:
+            print(e)
+            response = {
+                'status': 'error',
+                'message': 'Image processing error',
+            }
+
+    else:
+        response = {
+            'status': 'error',
+            'message': 'Only POST requests are processed',
+        }
+    return JsonResponse(response)
+
+# receives HTTP POST request with 'braille' key
+@csrf_exempt
+def braille_to_english(request):
+    if request.method == 'POST':
+        # braille text
+        data = request.POST.get("braille", "")
+
+        try:
+            english_text = convert_braille_to_english(data)
+
+            response = {
+                "status": "success",
+                "text": english_text,
+            }
+
+        except Exception as e:
+            print(e)
+            response = {
+                'status': 'error',
+                'message': 'Braille processing error',
             }
 
     else:
