@@ -13,7 +13,7 @@ Create a file named `.env` by copying the contents of `.env.template` and replac
 ## Structure
 
 The `pipeline` directory contains 5 `.py` files:
-1. `image_converter.py` - processes a photo of Braille writing to return a string of Braille Unicode characters. Based on [Angelica Braille Reader](https://angelina-reader.ru/).
+1. `image_converter.py` - processes a photo of Braille writing to return a string of Braille Unicode characters. Based on [Angelina Braille Reader](https://angelina-reader.ru/).
 2. `braille_converter.py` - translates a string of Braille characters to English. Built with [Claude](https://claude.ai/).
 3. `generate_voice_eleven.py` - reads a string to create a speech audio file. Built with [ElevenLabs](https://elevenlabs.io/) (Tokens are limited, so use sparingly)
 4. `generate_voice_gtts.py` - reads a string to create a speech audio file. Lower quality than `3.`. Uses [Google TTS](https://cloud.google.com/text-to-speech)
